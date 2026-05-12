@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adivinhe o Killer</title>
+<style>
+    :root {
+        --bg-color: #121212;
+        --panel-bg: #1e1e1e;
+        --text-color: #e0e0e0;
+        --correct: #2e7d32; /* Verde */
+        --incorrect: #c62828; /* Vermelho */
+        --partial: #d4a31a; /* Amarelo (Acerto Parcial) */
+        --border-color: #333;
+    }
+
+    body {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        margin: 0;
+    }
+
+    h1 {
+        color: #4800ce;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 5px;
+        text-align: center;
+    }
+
+    p.subtitle {
+        color: #aaa;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .game-controls {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 30px;
+        width: 100%;
+        max-width: 600px;
+    }
+
+    input {
+        flex: 1;
+        padding: 12px;
+        background-color: var(--panel-bg);
+        border: 1px solid var(--border-color);
+        color: white;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+
+    button {
+        padding: 12px 24px;
+        background-color: #4d038a;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        transition: background-color 0.2s;
+    }
+
+    button:hover {
+        background-color: #b71c1c;
+    }
+
+    .table-container {
+        width: 100%;
+        max-width: 1100px;
+        overflow-x: auto;
+        display: flex;
+        justify-content: center; 
+    }
+
+    table {
+        margin: 0 auto;
+        border-collapse: separate;
+        border-spacing: 8px;
+    }
+
+    th {
+        padding: 5px;
+        text-transform: uppercase;
+        font-size: 11px;
+        color: #aaa;
+        width: 85px;
+        text-align: center;
+    }
+
+    td {
+        width: 85px;  
+        height: 85px; 
+        padding: 5px;
+        text-align: center;
+        border-radius: 4px;
+        font-weight: bold;
+        font-size: 12px; 
+        line-height: 1.3; 
+        background-color: var(--panel-bg);
+        border: none;
+        transition: all 0.3s ease;
+        vertical-align: middle;
+        box-sizing: border-box;
+        word-wrap: break-word; 
+    }
+
+    td:first-child {
+        padding: 0;
+        overflow: hidden;
+    }
+
+    .match {
+        background-color: var(--correct);
+    }
+
+    .no-match {
+        background-color: var(--incorrect);
+    }
+
+    .partial {
+        background-color: var(--partial);
+    }
+
+    #message {
+        margin-top: 20px;
+        font-size: 24px;
+        font-weight: bold;
+        color: #4caf50;
+        text-align: center;
+        display: none;
+    }
+
+    .killer-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        border: none; 
+        background-color: #363636; 
+    }
+</style>
+</head>
+<body>
+
+    <h1>DBDle</h1>
+    <p class="subtitle">Adivinhe o Assassino da Entidade</p>
+
+    <div class="game-controls">
+        <input type="text" id="guessInput" list="killerList" placeholder="Digite o nome do Killer..." autocomplete="off">
+        <datalist id="killerList"></datalist>
+        <button onclick="fazerPalpite()">Adivinhar</button>
+    </div>
+
+    <div id="message">Parabéns! Você adivinhou o Killer!</div>
+
+    <div class="table-container">
+        <table id="guessesTable">
+            <thead>
+                <tr>
+                    <th>Killer</th>
+                    <th>Gênero</th>
+                    <th>Raio de Terror</th>
+                    <th>Velocidade</th>
+                    <th>Range</th>
+                    <th>Altura</th>
+                    <th>Origem</th>
+                    <th>Ano</th>
+                </tr>
+            </thead>
+            <tbody id="guessesBody">
+                </tbody>
+        </table>
+    </div>
+
+<script>
+    const db = [
+        { id: "trapper", nome: "The Trapper", genero: "Masculino", raio: "32m", vel: "4.6", range: "Melee", altura: "Alta", origem: "Norte-Americano", ano: 2016 },
+        { id: "wraith", nome: "The Wraith", genero: "Masculino", raio: "32m", vel: "4.6", range: "Melee", altura: "Alta", origem: "Nigeriano", ano: 2016 },
+        { id: "hillbilly", nome: "The Hillbilly", genero: "Masculino", raio: "32m", vel: "4.6", range: "Melee", altura: "Alta", origem: "Norte-Americano", ano: 2016 },
+        { id: "nurse", nome: "The Nurse", genero: "Feminino", raio: "32m", vel: "3.85", range: "Melee", altura: "Média", origem: "Norte-Americana", ano: 2016 },
+        { id: "shape", nome: "The Shape", genero: "Masculino", raio: "16m/32m", vel: "4.2/4.6", range: "Melee", altura: "Alta", origem: "Norte-Americano", ano: 2016 },
+        { id: "hag", nome: "The Hag", genero: "Feminino", raio: "24m", vel: "4.4", range: "Melee", altura: "Baixa", origem: "Norte-Americana", ano: 2016 },
+        { id: "doctor", nome: "The Doctor", genero: "Masculino", raio: "32m", vel: "4.6", range: "Melee/Ranged", altura: "Alta", origem: "Norte-Americano", ano: 2017 },
+        { id: "huntress", nome: "The Huntress", genero: "Feminino", raio: "24m", vel: "4.4", range: "Melee/Ranged", altura: "Alta", origem: "Russa", ano: 2017 },
+        { id: "cannibal", nome: "The Cannibal", genero: "Masculino", raio: "32m", vel: "4.6", range: "Melee", altura: "Alta", origem: "Norte-Americano", ano: 2017 },
+        { id: "nightmare", nome: "The Nightmare", genero: "Masculino", raio: "32m", vel: "4.6", range: "Melee", altura: "Média", origem: "Norte-Americano", ano: 2017 },
+        { id: "pig", nome: "The Pig", genero: "Feminino", raio: "32m", vel: "4.6/3.6", range: "Melee", altura: "Média", origem: "Norte-Americana", ano: 2018 },
+        { id: "clown", nome: "The Clown", genero: "Masculino", raio: "32m", vel: "4.6", range: "Melee/Ranged", altura: "Alta", origem: "Norte-Americano", ano: 2018 },
+        { id: "spirit", nome: "The Spirit", genero: "Feminino", raio: "24m", vel: "4.4", range: "Melee", altura: "Média", origem: "Japonesa", ano: 2018 },
+        { id: "legion", nome: "The Legion", genero: "Varia", raio: "32m", vel: "4.6/5.28", range: "Melee", altura: "Média", origem: "Canadense", ano: 2018 },
+        { id: "plague", nome: "The Plague", genero: "Feminino", raio: "32m", vel: "4.6", range: "Melee/Ranged", altura: "Alta", origem: "Babilônica", ano: 2019 },
+        { id: "ghostface", nome: "The Ghost Face", genero: "Masculino", raio: "32m", vel: "4.6/3.6", range: "Melee", altura: "Média", origem: "Norte-Americano", ano: 2019 },
+        { id: "demogorgon", nome: "The Demogorgon", genero: "Desconhecido", raio: "32m", vel: "4.6", range: "Melee", altura: "Alta", origem: "Desconhecida", ano: 2019 },
+        { id: "oni", nome: "The Oni", genero: "Masculino", raio: "32m", vel: "4.6", range: "Melee", altura: "Alta", origem: "Japonês", ano: 2019 },
+        { id: "deathslinger", nome: "The Deathslinger", genero: "Masculino", raio: "32m", vel: "4.4", range: "Melee/Ranged", altura: "Alta", origem: "Norte-Americano", ano: 2020 },
+        { id: "executioner", nome: "The Executioner", genero: "Masculino", raio: "32m", vel: "4.6", range: "Melee/Ranged", altura: "Alta", origem: "Desconhecida", ano: 2020 },
+        { id: "blight", nome: "The Blight", genero: "Masculino", raio: "32m", vel: "4.6", range: "Melee", altura: "Média", origem: "Escocês", ano: 2020 },
+        { id: "twins", nome: "The Twins", genero: "Varia", raio: "32m", vel: "4.6/6.0", range: "Melee", altura: "Alta/Baixa", origem: "Francesa", ano: 2020 },
+        { id: "trickster", nome: "The Trickster", genero: "Masculino", raio: "24m", vel: "4.4", range: "Melee/Ranged", altura: "Média", origem: "Sul-Coreano", ano: 2021 },
+        { id: "nemesis", nome: "The Nemesis", genero: "Masculino", raio: "32m", vel: "4.6", range: "Melee/Ranged", altura: "Alta", origem: "Desconhecida", ano: 2021 },
+        { id: "cenobite", nome: "The Cenobite", genero: "Masculino", raio: "32m", vel: "4.6", range: "Melee/Ranged", altura: "Alta", origem: "Desconhecida", ano: 2021 },
+        { id: "artist", nome: "The Artist", genero: "Feminino", raio: "32m", vel: "4.6", range: "Melee/Ranged", altura: "Alta", origem: "Chilena", ano: 2021 },
+        { id: "onryo", nome: "The Onryō", genero: "Feminino", raio: "24m", vel: "4.6", range: "Melee", altura: "Baixa", origem: "Japonesa", ano: 2022 },
+        { id: "dredge", nome: "The Dredge", genero: "Desconhecido", raio: "32m", vel: "4.6", range: "Melee", altura: "Alta", origem: "Desconhecida", ano: 2022 },
+        { id: "mastermind", nome: "The Mastermind", genero: "Masculino", raio: "40m", vel: "4.6", range: "Melee", altura: "Média", origem: "Norte-Americano", ano: 2022 },
+        { id: "knight", nome: "The Knight", genero: "Masculino", raio: "32m", vel: "4.6", range: "Melee", altura: "Alta", origem: "Húngaro", ano: 2022 },
+        { id: "skullmerchant", nome: "The Skull Merchant", genero: "Feminino", raio: "32m", vel: "4.6", range: "Melee", altura: "Média", origem: "Brasileira", ano: 2023 },
+        { id: "singularity", nome: "The Singularity", genero: "Desconhecido", raio: "32m", vel: "4.6", range: "Melee/Ranged", altura: "Alta", origem: "Desconhecida", ano: 2023 },
+        { id: "xenomorph", nome: "The Xenomorph", genero: "Desconhecido", raio: "32m", vel: "4.6", range: "Melee/Ranged", altura: "Alta", origem: "Desconhecida", ano: 2023 },
+        { id: "goodguy", nome: "The Good Guy", genero: "Masculino", raio: "16m", vel: "4.4", range: "Melee", altura: "Baixa", origem: "Norte-Americano", ano: 2023 },
+        { id: "unknown", nome: "The Unknown", genero: "Desconhecido", raio: "32m", vel: "4.6", range: "Melee/Ranged", altura: "Média", origem: "Desconhecida", ano: 2024 },
+        { id: "lich", nome: "The Lich", genero: "Masculino", raio: "32m", vel: "4.6", range: "Melee/Ranged", altura: "Alta", origem: "Desconhecida", ano: 2024 },
+        { id: "darklord", nome: "The Dark Lord", genero: "Masculino", raio: "32m", vel: "4.6", range: "Melee/Ranged", altura: "Alta", origem: "Romeno", ano: 2024 },
+        { id: "houndmaster", nome: "The Houndmaster", genero: "Feminino", raio: "32m", vel: "4.6", range: "Melee/Ranged", altura: "Média", origem: "Britânica", ano: 2024 },
+        { id: "springtrap", nome: "The Animatronic", genero: "Masculino", raio: "32m", vel: "4.6", range: "Melee", altura: "Alta", origem: "Norte-Americano", ano: 2025 },
+        { id: "krasue", nome: "The Krasue", genero: "Feminino", raio: "32m", vel: "4.6", range: "Melee", altura: "Média", origem: "Tailandesa", ano: 2025 },
+        { id: "first", nome: "The First", genero: "Masculino", raio: "32m", vel: "4.6", range: "Melee", altura: "Alta", origem: "Norte-Americano", ano: 2026 },
+        { id: "ghoul", nome: "The Ghoul", genero: "Masculino", raio: "32m", vel: "4.6", range: "Melee", altura: "Alta", origem: "Japonês", ano: 2025 }
+    ];
+
+    // Popula o datalist para o autocomplete
+    const datalist = document.getElementById('killerList');
+    db.forEach(killer => {
+        let option = document.createElement('option');
+        option.value = killer.nome;
+        datalist.appendChild(option);
+    });
+
+    // Sorteia o Killer alvo
+    let alvo = db[Math.floor(Math.random() * db.length)];
+    let jogoVencido = false;
+
+    // Permite apertar Enter para enviar
+    document.getElementById("guessInput").addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            fazerPalpite();
+        }
+    });
+
+    function fazerPalpite() {
+        if (jogoVencido) return;
+
+        const input = document.getElementById('guessInput');
+        const nomePalpite = input.value.trim();
+        
+        const palpite = db.find(k => k.nome.toLowerCase() === nomePalpite.toLowerCase());
+
+        if (!palpite) {
+            alert("Killer não encontrado! Escolha um nome da lista.");
+            return;
+        }
+
+        adicionarLinhaTabela(palpite);
+        input.value = '';
+
+        if (palpite.nome === alvo.nome) {
+            jogoVencido = true;
+            document.getElementById('message').style.display = 'block';
+            document.getElementById('guessInput').disabled = true;
+        }
+    }
+
+    function adicionarLinhaTabela(palpite) {
+        const tbody = document.getElementById('guessesBody');
+        const tr = document.createElement('tr');
+        const checarCor = (valGuess, valTarget) => {
+            if (valGuess === valTarget) return 'match';
+            
+            if (String(valGuess).includes('/') || String(valTarget).includes('/')) {
+                const arrayGuess = String(valGuess).split('/').map(i => i.trim());
+                const arrayTarget = String(valTarget).split('/').map(i => i.trim());
+                
+                const temInterseccao = arrayGuess.some(item => arrayTarget.includes(item));
+                if (temInterseccao) return 'partial';
+            }
+            return 'no-match';
+        };
+
+        let anoTexto = palpite.ano;
+        let anoCor = 'no-match';
+        if (palpite.ano === alvo.ano) {
+            anoCor = 'match';
+        } else if (alvo.ano > palpite.ano) {
+            anoTexto += " ⬆️";
+        } else {
+            anoTexto += " ⬇️"; 
+        }
+
+        const caminhoDaImagem = `fotos_dos_killers/${palpite.id}.webp`; 
+
+        const formatarVelocidade = (vel) => {
+            if (!vel.includes('/')) return `${vel} m/s`;
+            return vel.split('/').map(v => `${v.trim()} m/s`).join(',<br>');
+        };
+
+        const formatarAtributo = (attr) => {
+            if (!String(attr).includes('/')) return attr;
+            return String(attr).split('/').join(',<br>');
+        };
+
+        tr.innerHTML = `
+            <td class="${checarCor(palpite.nome, alvo.nome)}">
+                <img src="${caminhoDaImagem}" alt="${palpite.nome}" class="killer-img" onerror="this.src='https://via.placeholder.com/64/333333/FFFFFF?text=?'">
+            </td>
+            <td class="${checarCor(palpite.genero, alvo.genero)}">${palpite.genero}</td>
+            <td class="${checarCor(palpite.raio, alvo.raio)}">${formatarAtributo(palpite.raio)}</td>
+            <td class="${checarCor(palpite.vel, alvo.vel)}">${formatarVelocidade(palpite.vel)}</td>
+            <td class="${checarCor(palpite.range, alvo.range)}">${formatarAtributo(palpite.range)}</td>
+            <td class="${checarCor(palpite.altura, alvo.altura)}">${palpite.altura}</td>
+            <td class="${checarCor(palpite.origem, alvo.origem)}">${palpite.origem}</td>
+            <td class="${anoCor}">${anoTexto}</td>
+        `;
+
+        tbody.insertBefore(tr, tbody.firstChild);
+    }
+</script>
+</body>
+</html>
