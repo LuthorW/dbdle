@@ -17,13 +17,93 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 40px 20px;
+    padding: 20px 20px 80px 20px;
     margin: 0;
     position: relative;
     min-height: 100vh;
     box-sizing: border-box;
 }
 
+/* --- BOTÕES DE MODO DE JOGO NO TOPO --- */
+.mode-controls {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    z-index: 10;
+}
+
+.mode-btn {
+    background-color: var(--panel-bg);
+    color: #888;
+    border: 2px solid var(--border-color);
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mode-btn:hover {
+    color: white;
+    border-color: #777;
+}
+
+.mode-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-hover);
+    box-shadow: 0 0 15px rgba(127, 5, 209, 0.4);
+}
+
+/* Ocultar as seções inativas */
+.mode-section {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+}
+
+.mode-section.active {
+    display: flex;
+}
+
+/* --- IMAGEM BORRADA DAS PERKS --- */
+.perk-blur-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.perk-blur-img {
+    width: 180px; 
+    height: 180px; 
+    object-fit: contain;
+    background-color: #2a2a35;
+    border-radius: 12px;
+    border: 3px solid var(--border-color);
+    filter: blur(3px); /* Aqui reduz o blur*/
+    transition: filter 0.5s ease, border-color 0.5s ease;
+}
+
+.perk-blur-img.revealed {
+    filter: blur(0px); /* Remove o blur quando acerta */
+    border-color: var(--correct);
+    box-shadow: 0 0 20px rgba(46, 125, 50, 0.6);
+}
+
+.perk-blur-text {
+    color: #aaa;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 10px;
+    letter-spacing: 1px;
+}
+
+
+/* --- RESTO DO SEU CSS ORIGINAL --- */
 #easterEggBtn {
     position: absolute;
     top: 20px;
@@ -43,7 +123,6 @@ body {
     transform: scale(1.2) rotate(10deg);
 }
 
-
 h1 {
     color: var(--primary-color);
     text-transform: uppercase;
@@ -53,21 +132,15 @@ h1 {
     font-size: 3rem;
     font-weight: 800;
     text-shadow: 0 0 15px rgba(127, 5, 209, 0.4);
-    
-    /* Adicionamos uma transição suave para todas as animações */
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
     cursor: default; 
 }
 
-/* --- ANIMAÇÃO DE HOVER (MOUSE EM CIMA) --- */
 h1:hover {
-    transform: scale(1.05) translateY(-3px); /* Cresce um pouquinho e sobe levemente */
-    color: #a94df5; /* Fica com um roxo mais "aceso" */
-    letter-spacing: 8px; /* Espalha as letras um pouco mais */
-    /* Aumenta bastante o brilho (Glow) */
-    text-shadow: 
-        0 0 25px rgba(127, 5, 209, 0.9), 
-        0 0 10px rgba(255, 255, 255, 0.3); 
+    transform: scale(1.05) translateY(-3px);
+    color: #a94df5; 
+    letter-spacing: 8px; 
+    text-shadow: 0 0 25px rgba(127, 5, 209, 0.9), 0 0 10px rgba(255, 255, 255, 0.3); 
 }
 
 p.subtitle {
@@ -139,17 +212,9 @@ button:active {
     padding-bottom: 20px;
 }
 
-/* Scrollbar estilizada para a tabela */
-.table-container::-webkit-scrollbar {
-    height: 8px;
-}
-.table-container::-webkit-scrollbar-track {
-    background: var(--bg-color); 
-}
-.table-container::-webkit-scrollbar-thumb {
-    background: var(--border-color); 
-    border-radius: 4px;
-}
+.table-container::-webkit-scrollbar { height: 8px; }
+.table-container::-webkit-scrollbar-track { background: var(--bg-color); }
+.table-container::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
 
 table {
     margin: 0 auto;
@@ -207,24 +272,16 @@ td:first-child {
 .no-match { background-color: var(--incorrect); border-color: var(--incorrect); }
 .partial { background-color: var(--partial); border-color: var(--partial); }
 
-/* * ANIMAÇÃO DE REVELAÇÃO */
 @keyframes flipReveal {
-    0% {
-        transform: rotateX(90deg);
-        opacity: 0;
-    }
-    100% {
-        transform: rotateX(0deg);
-        opacity: 1;
-    }
+    0% { transform: rotateX(90deg); opacity: 0; }
+    100% { transform: rotateX(0deg); opacity: 1; }
 }
 
 .new-row td {
-    opacity: 0; /*? Começa invisível */
+    opacity: 0;
     animation: flipReveal 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-/*! Efeito cascata */
 .new-row td:nth-child(1) { animation-delay: 0.1s; }
 .new-row td:nth-child(2) { animation-delay: 0.3s; }
 .new-row td:nth-child(3) { animation-delay: 0.5s; }
@@ -234,211 +291,16 @@ td:first-child {
 .new-row td:nth-child(7) { animation-delay: 1.3s; }
 .new-row td:nth-child(8) { animation-delay: 1.5s; }
 
-/* ANIMAÇÃO DA MENSAGEM DE VITÓRIA */
 @keyframes popIn {
     0% { transform: scale(0.8); opacity: 0; }
     50% { transform: scale(1.05); opacity: 1; }
     100% { transform: scale(1); opacity: 1; }
 }
 
-#message {
+.win-message {
     margin-top: 10px;
     margin-bottom: 20px;
-    font-size: 28px;
-    font-weight: 800;
-    color: #4caf50;
-    text-align: center;
     display: none;
-    text-shadow: 0 2px 10px rgba(76, 175, 80, 0.4);
-    animation: popIn 0.5s ease forwards;
-}
-
-/* --- ESTILOS DO AUTOCOMPLETAR CUSTOMIZADO --- */
-.input-wrapper {
-    position: relative;
-    flex: 1; /* Faz o wrapper ocupar o espaço disponível */
-}
-
-.input-wrapper input {
-    width: 100%; /* O input ocupa todo o espaço do wrapper */
-    box-sizing: border-box; /* Evita que o padding quebre o layout */
-}
-
-.autocomplete-list {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background-color: var(--panel-bg);
-    border: 2px solid var(--border-color);
-    border-top: none; /* Gruda no input */
-    border-radius: 0 0 8px 8px;
-    max-height: 250px;
-    overflow-y: auto;
-    z-index: 10;
-    display: none; /* Escondido por padrão */
-    box-shadow: 0 8px 16px rgba(0,0,0,0.5);
-}
-
-/* Scrollbar estilizada para a lista de sugestões */
-.autocomplete-list::-webkit-scrollbar {
-    width: 8px;
-}
-.autocomplete-list::-webkit-scrollbar-track {
-    background: #1c1c24; 
-    border-radius: 0 0 8px 0;
-}
-.autocomplete-list::-webkit-scrollbar-thumb {
-    background: #3a3a4a; 
-    border-radius: 4px;
-}
-
-.autocomplete-item {
-    padding: 12px 20px;
-    cursor: pointer;
-    border-bottom: 1px solid #2a2a35;
-    color: var(--text-color);
-    font-size: 15px;
-    transition: background-color 0.2s;
-}
-
-.autocomplete-item:last-child {
-    border-bottom: none;
-}
-
-.autocomplete-item:hover {
-    background-color: var(--primary-color);
-    color: white;
-}
-
-/* --- NOVAS SETAS GRÁFICAS PARA O ANO --- */
-
-.arrow-cell {
-    padding: 0;
-    overflow: hidden;
-    background-color: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-}
-
-.graphic-arrow-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    background-color: var(--incorrect); 
-    border-radius: 8px;
-    position: relative;
-    box-sizing: border-box;
-    border: 2px solid var(--border-color);
-}
-
-/* Seta preta centralizada */
-.graphic-arrow {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 60%; 
-    height: 75%;
-    background-color: rgba(15, 15, 15, 0.95);
-}
-
-.graphic-arrow.arrow-down {
-    clip-path: polygon(30% 0%, 70% 0%, 70% 50%, 100% 50%, 50% 100%, 0% 50%, 30% 50%);
-}
-
-.graphic-arrow.arrow-up {
-    clip-path: polygon(50% 0%, 100% 50%, 70% 50%, 70% 100%, 30% 100%, 30% 50%, 0% 50%);
-}
-
-/* Texto sobre a seta */
-.arrow-year {
-    position: relative; 
-    z-index: 2; /* Garante que o texto fique por cima da seta preta */
-    color: #ffffff;
-    font-size: 17px;
-    font-weight: 800;
-    font-family: 'Poppins', sans-serif;
-    text-shadow:
-        -1px -1px 0 #000,  
-         1px -1px 0 #000,
-        -1px  1px 0 #000,
-         1px  1px 0 #000,
-         0px  3px 5px rgba(0,0,0,0.8); 
-}
-
-body {
-    /* Adicionamos um padding extra no final da página para o footer não tampar a tabela */
-    padding-bottom: 80px; 
-}
-
-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0; /* Prende na direita também para garantir o esticamento */
-    width: 100%;
-    
-    background-color: rgba(13, 13, 18, 0.85); 
-    backdrop-filter: blur(8px); 
-    -webkit-backdrop-filter: blur(8px); 
-    
-    color: #777;
-    
-    /* --- O SEGREDO DO ALINHAMENTO PERFEITO AQUI --- */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* ---------------------------------------------- */
-    
-    padding: 15px 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.03); 
-    font-size: 14px;
-    z-index: 100;
-    box-sizing: border-box; /* Evita que o padding aumente o tamanho e quebre para o lado */
-}
-
-footer a {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: 600;
-    transition: color 0.2s;
-    margin-left: 4px; /* Dá um espacinho pro link não ficar grudado no texto */
-}
-
-footer a:hover {
-    color: var(--primary-hover);
-}
-
-/* --- IMAGEM NO AUTOCOMPLETAR --- */
-.autocomplete-item {
-    display: flex;
-    align-items: center;
-    gap: 15px; /* Espaço entre a foto e o nome */
-    padding: 10px 20px;
-    cursor: pointer;
-    border-bottom: 1px solid #2a2a35;
-    color: var(--text-color);
-    font-size: 15px;
-    transition: background-color 0.2s;
-}
-
-.autocomplete-img {
-    width: 40px;
-    height: 40px;
-    object-fit: cover;
-    border-radius: 4px;
-    background-color: #2a2a35;
-    border: 1px solid var(--border-color);
-}
-
-/* --- TELA DE VITÓRIA REMODELADA --- */
-#message {
-    margin-top: 10px;
-    margin-bottom: 20px;
-    display: none; /* Fica escondido até ganhar */
     flex-direction: column;
     align-items: center;
     gap: 15px;
@@ -454,7 +316,7 @@ footer a:hover {
     margin: 0;
 }
 
-#winImage {
+.win-image {
     width: 120px;
     height: 120px;
     object-fit: cover;
@@ -463,7 +325,7 @@ footer a:hover {
     box-shadow: 0 0 20px rgba(46, 125, 50, 0.6);
 }
 
-#winName {
+.win-name {
     font-size: 22px;
     font-weight: 800;
     color: white;
@@ -471,3 +333,54 @@ footer a:hover {
     text-transform: uppercase;
     letter-spacing: 1px;
 }
+
+.input-wrapper { position: relative; flex: 1; }
+.input-wrapper input { width: 100%; box-sizing: border-box; }
+
+.autocomplete-list {
+    position: absolute; top: 100%; left: 0; right: 0;
+    background-color: var(--panel-bg);
+    border: 2px solid var(--border-color);
+    border-top: none; border-radius: 0 0 8px 8px;
+    max-height: 250px; overflow-y: auto; z-index: 10;
+    display: none; box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+}
+
+.autocomplete-list::-webkit-scrollbar { width: 8px; }
+.autocomplete-list::-webkit-scrollbar-track { background: #1c1c24; border-radius: 0 0 8px 0; }
+.autocomplete-list::-webkit-scrollbar-thumb { background: #3a3a4a; border-radius: 4px; }
+
+.autocomplete-item {
+    display: flex; align-items: center; gap: 15px;
+    padding: 10px 20px; cursor: pointer;
+    border-bottom: 1px solid #2a2a35;
+    color: var(--text-color); font-size: 15px;
+    transition: background-color 0.2s;
+}
+
+.autocomplete-item:last-child { border-bottom: none; }
+.autocomplete-item:hover { background-color: var(--primary-color); color: white; }
+
+.autocomplete-img {
+    width: 40px; height: 40px; object-fit: contain;
+    border-radius: 4px; background-color: #2a2a35;
+    border: 1px solid var(--border-color);
+}
+
+.arrow-cell { padding: 0; overflow: hidden; background-color: transparent !important; border: none !important; box-shadow: none !important; }
+.graphic-arrow-container { display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; background-color: var(--incorrect); border-radius: 8px; position: relative; box-sizing: border-box; border: 2px solid var(--border-color); }
+.graphic-arrow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60%; height: 75%; background-color: rgba(15, 15, 15, 0.95); }
+.graphic-arrow.arrow-down { clip-path: polygon(30% 0%, 70% 0%, 70% 50%, 100% 50%, 50% 100%, 0% 50%, 30% 50%); }
+.graphic-arrow.arrow-up { clip-path: polygon(50% 0%, 100% 50%, 70% 50%, 70% 100%, 30% 100%, 30% 50%, 0% 50%); }
+.arrow-year { position: relative; z-index: 2; color: #ffffff; font-size: 17px; font-weight: 800; font-family: 'Poppins', sans-serif; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0px 3px 5px rgba(0,0,0,0.8); }
+
+footer {
+    position: fixed; bottom: 0; left: 0; right: 0; width: 100%;
+    background-color: rgba(13, 13, 18, 0.85); 
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); 
+    color: #777; display: flex; justify-content: center; align-items: center;
+    padding: 15px 0; border-top: 1px solid rgba(255, 255, 255, 0.03); 
+    font-size: 14px; z-index: 100; box-sizing: border-box; 
+}
+footer a { color: var(--primary-color); text-decoration: none; font-weight: 600; transition: color 0.2s; margin-left: 4px; }
+footer a:hover { color: var(--primary-hover); }
