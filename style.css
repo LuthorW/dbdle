@@ -53,6 +53,21 @@ h1 {
     font-size: 3rem;
     font-weight: 800;
     text-shadow: 0 0 15px rgba(127, 5, 209, 0.4);
+    
+    /* Adicionamos uma transição suave para todas as animações */
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
+    cursor: default; 
+}
+
+/* --- ANIMAÇÃO DE HOVER (MOUSE EM CIMA) --- */
+h1:hover {
+    transform: scale(1.05) translateY(-3px); /* Cresce um pouquinho e sobe levemente */
+    color: #a94df5; /* Fica com um roxo mais "aceso" */
+    letter-spacing: 8px; /* Espalha as letras um pouco mais */
+    /* Aumenta bastante o brilho (Glow) */
+    text-shadow: 
+        0 0 25px rgba(127, 5, 209, 0.9), 
+        0 0 10px rgba(255, 255, 255, 0.3); 
 }
 
 p.subtitle {
