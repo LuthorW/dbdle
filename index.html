@@ -1,167 +1,38 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Adivinhe o Killer</title>
-<style>
-    :root {
-        --bg-color: #121212;
-        --panel-bg: #1e1e1e;
-        --text-color: #e0e0e0;
-        --correct: #2e7d32; /* Verde */
-        --incorrect: #c62828; /* Vermelho */
-        --partial: #d4a31a; /* Amarelo (Acerto Parcial) */
-        --border-color: #333;
-    }
-
-    body {
-        background-color: var(--bg-color);
-        color: var(--text-color);
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 20px;
-        margin: 0;
-    }
-
-    h1 {
-        color: #4800ce;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        margin-bottom: 5px;
-        text-align: center;
-    }
-
-    p.subtitle {
-        color: #aaa;
-        margin-bottom: 20px;
-        text-align: center;
-    }
-
-    .game-controls {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 30px;
-        width: 100%;
-        max-width: 600px;
-    }
-
-    input {
-        flex: 1;
-        padding: 12px;
-        background-color: var(--panel-bg);
-        border: 1px solid var(--border-color);
-        color: white;
-        border-radius: 4px;
-        font-size: 16px;
-    }
-
-    button {
-        padding: 12px 24px;
-        background-color: #4d038a;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-        font-weight: bold;
-        transition: background-color 0.2s;
-    }
-
-    button:hover {
-        background-color: #b71c1c;
-    }
-
-    .table-container {
-        width: 100%;
-        max-width: 1100px;
-        overflow-x: auto;
-        display: flex;
-        justify-content: center; 
-    }
-
-    table {
-        margin: 0 auto;
-        border-collapse: separate;
-        border-spacing: 8px;
-    }
-
-    th {
-        padding: 5px;
-        text-transform: uppercase;
-        font-size: 11px;
-        color: #aaa;
-        width: 85px;
-        text-align: center;
-    }
-
-    td {
-        width: 85px;  
-        height: 85px; 
-        padding: 5px;
-        text-align: center;
-        border-radius: 4px;
-        font-weight: bold;
-        font-size: 12px; 
-        line-height: 1.3; 
-        background-color: var(--panel-bg);
-        border: none;
-        transition: all 0.3s ease;
-        vertical-align: middle;
-        box-sizing: border-box;
-        word-wrap: break-word; 
-    }
-
-    td:first-child {
-        padding: 0;
-        overflow: hidden;
-    }
-
-    .match {
-        background-color: var(--correct);
-    }
-
-    .no-match {
-        background-color: var(--incorrect);
-    }
-
-    .partial {
-        background-color: var(--partial);
-    }
-
-    #message {
-        margin-top: 20px;
-        font-size: 24px;
-        font-weight: bold;
-        color: #4caf50;
-        text-align: center;
-        display: none;
-    }
-
-    .killer-img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-        border: none; 
-        background-color: #363636; 
-    }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adivinhe o Killer</title>
+    
+    <link rel="icon" href="favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+    <audio id="easterEggAudio" src="audios/eutransaria.m4a" preload="auto"></audio>
+    <audio id="winAudio" src="audios/acertou.mp3" preload="auto"></audio> 
+    <audio id="winAudio2" src="audios/audio2.mp3" preload="auto"></audio> 
+    
+    <button id="easterEggBtn" onclick="tocarEasterEgg()" title="O que é isso?">🎵</button>
 
     <h1>DBDle</h1>
     <p class="subtitle">Adivinhe o Assassino da Entidade</p>
 
     <div class="game-controls">
-        <input type="text" id="guessInput" list="killerList" placeholder="Digite o nome do Killer..." autocomplete="off">
-        <datalist id="killerList"></datalist>
-        <button onclick="fazerPalpite()">Adivinhar</button>
+        <div class="input-wrapper">
+            <input type="text" id="guessInput" placeholder="Digite o nome do Killer..." autocomplete="off">
+            <div id="custom-autocomplete" class="autocomplete-list"></div>
+        </div>
+        <button type="button" onclick="fazerPalpite()">Adivinhar</button>
     </div>
 
-    <div id="message">Parabéns! Você adivinhou o Killer!</div>
+    <div id="message">
+        <h2 class="win-title">Parabéns! Você adivinhou o Killer! 🎉</h2>
+        <img id="winImage" src="" alt="Killer Vencedor">
+        <p id="winName"></p>
+    </div>
 
     <div class="table-container">
         <table id="guessesTable">
@@ -178,9 +49,13 @@
                 </tr>
             </thead>
             <tbody id="guessesBody">
-                </tbody>
+            </tbody>
         </table>
     </div>
+
+    <footer>
+        DBDle © 2026 - Desenvolvido por <a href="#" target="_blank">Você</a>. Não afiliado à Behaviour Interactive.
+    </footer>
 
 <script>
     const db = [
@@ -228,52 +103,135 @@
         { id: "ghoul", nome: "The Ghoul", genero: "Masculino", raio: "32m", vel: "4.6", range: "Melee", altura: "Alta", origem: "Japonês", ano: 2025 }
     ];
 
-    // Popula o datalist para o autocomplete
-    const datalist = document.getElementById('killerList');
-    db.forEach(killer => {
-        let option = document.createElement('option');
-        option.value = killer.nome;
-        datalist.appendChild(option);
-    });
-
-    // Sorteia o Killer alvo
     let alvo = db[Math.floor(Math.random() * db.length)];
     let jogoVencido = false;
 
-    // Permite apertar Enter para enviar
-    document.getElementById("guessInput").addEventListener("keypress", function(event) {
+    const inputElement = document.getElementById("guessInput");
+    const autocompleteList = document.getElementById("custom-autocomplete");
+
+    inputElement.addEventListener("input", function() {
+        const val = this.value.trim();
+        autocompleteList.innerHTML = "";
+        
+        if (!val) {
+            autocompleteList.style.display = "none";
+            return;
+        }
+
+        const matches = db.filter(k => k.nome.toLowerCase().includes(val.toLowerCase()));
+
+        if (matches.length > 0) {
+            autocompleteList.style.display = "block";
+            
+            matches.forEach(match => {
+                const item = document.createElement("div");
+                item.classList.add("autocomplete-item");
+                
+                const img = document.createElement("img");
+                img.src = `fotos_dos_killers/${match.id}.webp`;
+                img.classList.add("autocomplete-img");
+                img.onerror = function() { this.src = 'https://via.placeholder.com/40/2a2a35/FFFFFF?text=?'; };
+                
+                const text = document.createElement("span");
+                text.textContent = match.nome;
+                
+                item.appendChild(img);
+                item.appendChild(text);
+                
+                item.addEventListener("mousedown", function(e) {
+                    e.preventDefault(); 
+                    inputElement.value = match.nome;
+                    autocompleteList.style.display = "none";
+                });
+                
+                autocompleteList.appendChild(item);
+            });
+        } else {
+            autocompleteList.style.display = "none";
+        }
+    });
+
+    document.addEventListener("mousedown", function(e) {
+        if (e.target !== inputElement && !autocompleteList.contains(e.target)) {
+            autocompleteList.style.display = "none";
+        }
+    });
+
+    inputElement.addEventListener("keypress", function(event) {
         if (event.key === "Enter") {
             event.preventDefault();
             fazerPalpite();
+            autocompleteList.style.display = "none";
         }
     });
+
+    function tocarEasterEgg() {
+        const audio = document.getElementById('easterEggAudio');
+        if(audio) {
+            audio.currentTime = 0; 
+            audio.play();
+        }
+    }
 
     function fazerPalpite() {
         if (jogoVencido) return;
 
-        const input = document.getElementById('guessInput');
-        const nomePalpite = input.value.trim();
-        
-        const palpite = db.find(k => k.nome.toLowerCase() === nomePalpite.toLowerCase());
+        const nomePalpite = inputElement.value.trim().toLowerCase();
+        if (!nomePalpite) return;
+
+        let palpite = db.find(k => k.nome.toLowerCase() === nomePalpite);
 
         if (!palpite) {
-            alert("Killer não encontrado! Escolha um nome da lista.");
+            const matches = db.filter(k => k.nome.toLowerCase().includes(nomePalpite));
+            if (matches.length === 1) {
+                palpite = matches[0]; 
+            }
+        }
+
+        if (!palpite) {
+            alert("Killer não encontrado! Escolha um nome válido da lista.");
             return;
         }
 
         adicionarLinhaTabela(palpite);
-        input.value = '';
+        inputElement.value = '';
 
         if (palpite.nome === alvo.nome) {
             jogoVencido = true;
-            document.getElementById('message').style.display = 'block';
-            document.getElementById('guessInput').disabled = true;
+            
+            setTimeout(() => {
+                const msgDiv = document.getElementById('message');
+                
+                document.getElementById('winImage').src = `fotos_dos_killers/${palpite.id}.webp`;
+                
+                document.getElementById('winName').textContent = palpite.nome.replace(/^The\s+/i, '');
+                
+                msgDiv.style.display = 'flex'; 
+                
+                const winAudio = document.getElementById('winAudio');
+                if(winAudio) {
+                    winAudio.currentTime = 0;
+                    winAudio.play();
+                }
+
+                const winAudio2 = document.getElementById('winAudio2');
+                if(winAudio2) {
+                    winAudio2.currentTime = 0;
+                    winAudio2.play();
+                }
+
+            }, 1800); 
+            
+            inputElement.disabled = true;
         }
     }
 
     function adicionarLinhaTabela(palpite) {
         const tbody = document.getElementById('guessesBody');
         const tr = document.createElement('tr');
+        
+        tr.classList.add('new-row');
+
         const checarCor = (valGuess, valTarget) => {
             if (valGuess === valTarget) return 'match';
             
@@ -287,14 +245,22 @@
             return 'no-match';
         };
 
-        let anoTexto = palpite.ano;
-        let anoCor = 'no-match';
+        let anoHTML = palpite.ano; 
+        let anoCor = 'no-match'; 
+
         if (palpite.ano === alvo.ano) {
             anoCor = 'match';
-        } else if (alvo.ano > palpite.ano) {
-            anoTexto += " ⬆️";
+            anoHTML = palpite.ano; 
         } else {
-            anoTexto += " ⬇️"; 
+            anoCor = 'no-match';
+            let arrowClass = (alvo.ano > palpite.ano) ? 'arrow-up' : 'arrow-down';
+            
+            anoHTML = `
+                <div class="graphic-arrow-container">
+                    <div class="graphic-arrow ${arrowClass}"></div>
+                    <span class="arrow-year">${palpite.ano}</span>
+                </div>
+            `;
         }
 
         const caminhoDaImagem = `fotos_dos_killers/${palpite.id}.webp`; 
@@ -310,8 +276,8 @@
         };
 
         tr.innerHTML = `
-            <td class="${checarCor(palpite.nome, alvo.nome)}">
-                <img src="${caminhoDaImagem}" alt="${palpite.nome}" class="killer-img" onerror="this.src='https://via.placeholder.com/64/333333/FFFFFF?text=?'">
+            <td>
+                <img src="${caminhoDaImagem}" alt="${palpite.nome}" class="killer-img" onerror="this.src='https://via.placeholder.com/64/2a2a35/FFFFFF?text=?'">
             </td>
             <td class="${checarCor(palpite.genero, alvo.genero)}">${palpite.genero}</td>
             <td class="${checarCor(palpite.raio, alvo.raio)}">${formatarAtributo(palpite.raio)}</td>
@@ -319,7 +285,7 @@
             <td class="${checarCor(palpite.range, alvo.range)}">${formatarAtributo(palpite.range)}</td>
             <td class="${checarCor(palpite.altura, alvo.altura)}">${palpite.altura}</td>
             <td class="${checarCor(palpite.origem, alvo.origem)}">${palpite.origem}</td>
-            <td class="${anoCor}">${anoTexto}</td>
+            <td class="${anoCor} ${anoCor === 'no-match' ? 'arrow-cell' : ''}">${anoHTML}</td>
         `;
 
         tbody.insertBefore(tr, tbody.firstChild);
