@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Adivinhe o Killer</title>
-    
+
     <link rel="icon" href="favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -54,7 +54,7 @@
     </div>
 
     <footer>
-        DBDle © 2026 - Desenvolvido por <a href="#" target="_blank">Você</a>. Não afiliado à Behaviour Interactive.
+        The Game © 2026 - Desenvolvido por Luthor Corporation. Não afiliado à Behaviour Interactive.
     </footer>
 
 <script>
@@ -216,6 +216,7 @@
 
                 const winAudio2 = document.getElementById('winAudio2');
                 if(winAudio2) {
+                    winAudio2.volume = 0.4; // <-- Volume reduzido aqui (20%)
                     winAudio2.currentTime = 0;
                     winAudio2.play();
                 }
