@@ -42,7 +42,7 @@ body {
     opacity: 1;
     transform: scale(1.2) rotate(10deg);
 }
-/* ----------------------------- */
+
 
 h1 {
     color: var(--primary-color);
