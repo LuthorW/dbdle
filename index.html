@@ -14,7 +14,7 @@
     <audio id="easterEggAudio" src="audios/eutransaria.m4a" preload="auto"></audio>
     <audio id="winAudio" src="audios/acertou.mp3" preload="auto"></audio> 
     <audio id="winAudio2" src="audios/audio2.mp3" preload="auto"></audio> 
-    <audio id="winAudio2" src="audios/aura-ego.mp3" preload="auto"></audio> 
+    <audio id="winAudio3" src="audios/aura-ego.mp3" preload="auto"></audio> 
     
     <button id="easterEggBtn" onclick="tocarEasterEgg()" title="O que é isso?">🎵</button>
 
@@ -220,6 +220,13 @@
                     winAudio2.volume = 0.2; // <-- Volume reduzido aqui (20%)
                     winAudio2.currentTime = 0;
                     winAudio2.play();
+                }
+
+                const winAudio3 = document.getElementById('winAudio3');
+                if(winAudio3) {
+                    winAudio3.volume = 0.3; // <-- Volume reduzido aqui (20%)
+                    winAudio3.currentTime = 0;
+                    winAudio3.play();
                 }
 
             }, 1800); 
