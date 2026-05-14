@@ -368,9 +368,20 @@ function trocarModo(modoId, botao) {
     botao.classList.add('active');
     document.getElementById(modoId).classList.add('active');
 
-    // Carrega a imagem no modo perk se ainda não estiver carregada
-    if(modoId === 'perk-killer-mode') document.getElementById('hiddenPerkK').src = `perks/${alvoPerkK.id}.webp`;
-    if(modoId === 'perk-surv-mode') document.getElementById('hiddenPerkS').src = `perks/${alvoPerkS.id}.webp`;
+    const angulosFixos = [0, 90, 180, 270];
+    const rotK = angulosFixos[Math.floor(Math.random() * angulosFixos.length)];
+    const rotS = angulosFixos[Math.floor(Math.random() * angulosFixos.length)];
+
+    if(modoId === 'perk-killer-mode') {
+        const imgK = document.getElementById('hiddenPerkK');
+        imgK.src = `perks/${alvoPerkK.id}.webp`;
+        imgK.style.transform = `rotate(${rotK}deg)`;
+    }
+    if(modoId === 'perk-surv-mode') {
+        const imgS = document.getElementById('hiddenPerkS');
+        imgS.src = `perks/${alvoPerkS.id}.webp`;
+        imgS.style.transform = `rotate(${rotS}deg)`;
+    }
 }
 
 // ==========================================
@@ -393,6 +404,7 @@ function setupAutocomplete(inputId, listId, database, pasta, ext) {
             matches.forEach(match => {
                 const div = document.createElement("div");
                 div.className = "autocomplete-item";
+                // Imagem normal, sem style de transform
                 div.innerHTML = `<img src="${pasta}/${match.id}.${ext}" class="autocomplete-img"><span>${match.nome}</span>`;
                 div.addEventListener("mousedown", (e) => {
                     e.preventDefault();
@@ -424,7 +436,7 @@ function tocarAudiosVitoria() {
 
     if(a1) { a1.currentTime = 0; a1.play(); }
     if(a2) { 
-        a2.volume = 0.2; // Volume reduzido conforme solicitado
+        a2.volume = 0.2; 
         a2.currentTime = 0; a2.play(); 
     }
     if(a3) { a3.volume = 0.3; a3.currentTime = 0; a3.play(); }
@@ -497,6 +509,7 @@ function fazerPalpitePerk(inputId, autoId, database, alvo, bodyId, msgId, nameId
     const tr = document.createElement('tr');
     tr.className = 'new-row';
 
+    // Imagem da tabela normal, sempre a 0 graus
     tr.innerHTML = `
         <td><img src="perks/${palpite.id}.webp" class="killer-img"></td>
         <td class="${palpite.id === alvo.id ? 'match' : 'no-match'}">${palpite.nome}</td>
@@ -507,7 +520,10 @@ function fazerPalpitePerk(inputId, autoId, database, alvo, bodyId, msgId, nameId
     if (palpite.id === alvo.id) {
         input.disabled = true;
         setTimeout(() => {
-            document.getElementById(imgId).classList.add('revealed');
+            const imgCentral = document.getElementById(imgId);
+            imgCentral.classList.add('revealed');
+            imgCentral.style.transform = `rotate(0deg)`; 
+            
             document.getElementById(nameId).textContent = palpite.nome;
             document.getElementById(msgId).style.display = 'flex';
             tocarAudiosVitoria();
