@@ -1,6 +1,4 @@
-// ==========================================
-// 1. BANCOS DE DADOS
-// ==========================================
+// Banco de dados
 
 const dbKillers = [
     { id: "trapper", nome: "The Trapper", genero: "Masculino", raio: "32m", vel: "4.6", range: "Melee", altura: "Alta", origem: "Norte-Americano", ano: 2016 },
@@ -357,10 +355,12 @@ let alvoPerkS = dbPerksSurv[Math.floor(Math.random() * dbPerksSurv.length)];
 
 let venceuKiller = false, venceuPerkK = false, venceuPerkS = false;
 
-// ==========================================
-// 2. FUNÇÕES DE NAVEGAÇÃO
-// ==========================================
+// Sorteia rotação
+const angulosPossiveis = [0, 90, 180, 270];
+let rotacaoFixaK = angulosPossiveis[Math.floor(Math.random() * angulosPossiveis.length)];
+let rotacaoFixaS = angulosPossiveis[Math.floor(Math.random() * angulosPossiveis.length)];
 
+// Funções de navegação
 function trocarModo(modoId, botao) {
     document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.mode-section').forEach(s => s.classList.remove('active'));
@@ -368,26 +368,21 @@ function trocarModo(modoId, botao) {
     botao.classList.add('active');
     document.getElementById(modoId).classList.add('active');
 
-    const angulosFixos = [0, 90, 180, 270];
-    const rotK = angulosFixos[Math.floor(Math.random() * angulosFixos.length)];
-    const rotS = angulosFixos[Math.floor(Math.random() * angulosFixos.length)];
-
+    // Carrega a imagem no modo perk e aplica a rotação fixa sorteada no início
     if(modoId === 'perk-killer-mode') {
         const imgK = document.getElementById('hiddenPerkK');
         imgK.src = `perks/${alvoPerkK.id}.webp`;
-        imgK.style.transform = `rotate(${rotK}deg)`;
+        // Só aplica a rotação se ainda não tiver vencido (para não girar de novo se já tiver revelado)
+        if (!venceuPerkK) imgK.style.transform = `rotate(${rotacaoFixaK}deg)`;
     }
     if(modoId === 'perk-surv-mode') {
         const imgS = document.getElementById('hiddenPerkS');
         imgS.src = `perks/${alvoPerkS.id}.webp`;
-        imgS.style.transform = `rotate(${rotS}deg)`;
+        if (!venceuPerkS) imgS.style.transform = `rotate(${rotacaoFixaS}deg)`;
     }
 }
 
-// ==========================================
-// 3. LÓGICA DE AUTOCOMPLETE
-// ==========================================
-
+// Autocomplete
 function setupAutocomplete(inputId, listId, database, pasta, ext) {
     const input = document.getElementById(inputId);
     const list = document.getElementById(listId);
@@ -425,10 +420,7 @@ setupAutocomplete("guessInput", "custom-autocomplete", dbKillers, "fotos_dos_kil
 setupAutocomplete("guessPerkKInput", "auto-perk-k", dbPerksKiller, "perks", "webp");
 setupAutocomplete("guessPerkSInput", "auto-perk-s", dbPerksSurv, "perks", "webp");
 
-// ==========================================
-// 4. LÓGICA DE VITÓRIA E ÁUDIOS
-// ==========================================
-
+// Win e audios
 function tocarAudiosVitoria() {
     const a1 = document.getElementById('winAudio');
     const a2 = document.getElementById('winAudio2');
@@ -447,10 +439,7 @@ function tocarEasterEgg() {
     if(audio) { audio.currentTime = 0; audio.play(); }
 }
 
-// ==========================================
-// 5. PROCESSAMENTO DE PALPITES
-// ==========================================
-
+// Palpites
 function fazerPalpiteKiller() {
     if (venceuKiller) return;
     const input = document.getElementById("guessInput");
