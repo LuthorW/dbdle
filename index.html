@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Adivinhe o Killer</title>
 
-    <link rel="icon" href="favicon.png">
+    <link rel="icon" href="favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -14,6 +14,7 @@
     <audio id="easterEggAudio" src="audios/eutransaria.m4a" preload="auto"></audio>
     <audio id="winAudio" src="audios/acertou.mp3" preload="auto"></audio> 
     <audio id="winAudio2" src="audios/audio2.mp3" preload="auto"></audio> 
+    <audio id="winAudio2" src="audios/aura-ego.mp3" preload="auto"></audio> 
     
     <button id="easterEggBtn" onclick="tocarEasterEgg()" title="O que é isso?">🎵</button>
 
@@ -216,7 +217,7 @@
 
                 const winAudio2 = document.getElementById('winAudio2');
                 if(winAudio2) {
-                    winAudio2.volume = 0.4; // <-- Volume reduzido aqui (20%)
+                    winAudio2.volume = 0.2; // <-- Volume reduzido aqui (20%)
                     winAudio2.currentTime = 0;
                     winAudio2.play();
                 }
