@@ -368,17 +368,28 @@ function trocarModo(modoId, botao) {
     botao.classList.add('active');
     document.getElementById(modoId).classList.add('active');
 
-    // Carrega a imagem no modo perk e aplica a rotação fixa sorteada no início
     if(modoId === 'perk-killer-mode') {
         const imgK = document.getElementById('hiddenPerkK');
         imgK.src = `perks/${alvoPerkK.id}.webp`;
-        // Só aplica a rotação se ainda não tiver vencido (para não girar de novo se já tiver revelado)
-        if (!venceuPerkK) imgK.style.transform = `rotate(${rotacaoFixaK}deg)`;
+        
+        // Se já venceu, força 0 graus. Se não, usa a rotação sorteada.
+        if (venceuPerkK) {
+            imgK.style.transform = `rotate(0deg)`;
+        } else {
+            imgK.style.transform = `rotate(${rotacaoFixaK}deg)`;
+        }
     }
+    
     if(modoId === 'perk-surv-mode') {
         const imgS = document.getElementById('hiddenPerkS');
         imgS.src = `perks/${alvoPerkS.id}.webp`;
-        if (!venceuPerkS) imgS.style.transform = `rotate(${rotacaoFixaS}deg)`;
+        
+        // Mesma lógica para o Survivor
+        if (venceuPerkS) {
+            imgS.style.transform = `rotate(0deg)`;
+        } else {
+            imgS.style.transform = `rotate(${rotacaoFixaS}deg)`;
+        }
     }
 }
 
@@ -485,7 +496,7 @@ function fazerPalpiteKiller() {
     }
 }
 
-function fazerPalpitePerk(inputId, autoId, database, alvo, bodyId, msgId, nameId, imgId, venceuFlag) {
+function fazerPalpitePerk(inputId, autoId, database, alvo, bodyId, msgId, nameId, imgId) {
     const input = document.getElementById(inputId);
     const val = input.value.trim().toLowerCase();
     const palpite = database.find(p => p.nome.toLowerCase() === val) || database.find(p => p.nome.toLowerCase().includes(val));
@@ -498,7 +509,6 @@ function fazerPalpitePerk(inputId, autoId, database, alvo, bodyId, msgId, nameId
     const tr = document.createElement('tr');
     tr.className = 'new-row';
 
-    // Imagem da tabela normal, sempre a 0 graus
     tr.innerHTML = `
         <td><img src="perks/${palpite.id}.webp" class="killer-img"></td>
         <td class="${palpite.id === alvo.id ? 'match' : 'no-match'}">${palpite.nome}</td>
@@ -508,6 +518,8 @@ function fazerPalpitePerk(inputId, autoId, database, alvo, bodyId, msgId, nameId
 
     if (palpite.id === alvo.id) {
         input.disabled = true;
+        if (alvo === alvoPerkK) venceuPerkK = true;
+        if (alvo === alvoPerkS) venceuPerkS = true;
         setTimeout(() => {
             const imgCentral = document.getElementById(imgId);
             imgCentral.classList.add('revealed');
@@ -516,7 +528,7 @@ function fazerPalpitePerk(inputId, autoId, database, alvo, bodyId, msgId, nameId
             document.getElementById(nameId).textContent = palpite.nome;
             document.getElementById(msgId).style.display = 'flex';
             tocarAudiosVitoria();
-        }, 800);
+        }, 1100);
     }
 }
 

@@ -78,14 +78,15 @@ body {
 }
 
 .perk-blur-img {
-    width: 180px; 
-    height: 180px; 
+    width: 160px;  
+    height: 160px; 
     object-fit: contain;
     background-color: #2a2a35;
     border-radius: 12px;
     border: 3px solid var(--border-color);
-    filter: blur(5px); /* Aqui reduz o blur*/
-    transition: filter 0.5s ease, border-color 0.5s ease;
+    filter: blur(4px); 
+    /* Adicionamos o 'transform' aqui para o giro de vitória ser suave! */
+    transition: filter 0.4s ease, border-color 0.4s ease, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .perk-blur-img.revealed {
@@ -277,17 +278,17 @@ td:first-child {
 
 .new-row td {
     opacity: 0;
-    animation: flipReveal 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation: flipReveal 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .new-row td:nth-child(1) { animation-delay: 0.1s; }
-.new-row td:nth-child(2) { animation-delay: 0.3s; }
-.new-row td:nth-child(3) { animation-delay: 0.5s; }
-.new-row td:nth-child(4) { animation-delay: 0.7s; }
-.new-row td:nth-child(5) { animation-delay: 0.9s; }
-.new-row td:nth-child(6) { animation-delay: 1.1s; }
-.new-row td:nth-child(7) { animation-delay: 1.3s; }
-.new-row td:nth-child(8) { animation-delay: 1.5s; }
+.new-row td:nth-child(2) { animation-delay: 0.2s; }
+.new-row td:nth-child(3) { animation-delay: 0.3s; }
+.new-row td:nth-child(4) { animation-delay: 0.4s; }
+.new-row td:nth-child(5) { animation-delay: 0.6s; }
+.new-row td:nth-child(6) { animation-delay: 0.8s; }
+.new-row td:nth-child(7) { animation-delay: 1.0s; }
+.new-row td:nth-child(8) { animation-delay: 1.2s; }
 
 @keyframes popIn {
     0% { transform: scale(0.8); opacity: 0; }
